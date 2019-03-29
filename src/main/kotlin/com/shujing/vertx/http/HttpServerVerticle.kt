@@ -1,4 +1,4 @@
-package com.shujing.vert_x.http
+package com.shujing.vertx.http
 
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Future
@@ -7,9 +7,10 @@ import org.slf4j.LoggerFactory
 
 class HttpServerVerticle : AbstractVerticle() {
 
-  private val log : Logger = LoggerFactory.getLogger(HttpServerVerticle::class.java)
-
-  private val port = 8888
+  companion object {
+    private val LOG : Logger = LoggerFactory.getLogger(this::class.java)
+    private val port = 8888
+  }
 
   override fun start(startFuture: Future<Void>) {
       vertx
@@ -22,7 +23,7 @@ class HttpServerVerticle : AbstractVerticle() {
         .listen(port) {arHttp ->
           if (arHttp.succeeded()) {
             startFuture.complete()
-            log.info("HTTP server started on port {}", port)
+            LOG.info("HTTP server started on port {}", port)
           } else{
             startFuture.fail(arHttp.cause())
           }

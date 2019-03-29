@@ -1,4 +1,4 @@
-package com.shujing.vert_x
+package com.shujing.vertx
 
 import io.vertx.core.Vertx
 import io.vertx.junit5.Timeout
@@ -21,7 +21,7 @@ class TestMainVerticle {
 
   @Test
   @DisplayName("Should start a Web Server on port 8888")
-  @Timeout(value = 10, timeUnit = TimeUnit.SECONDS)
+  @Timeout(value = 60, timeUnit = TimeUnit.SECONDS)
   @Throws(Throwable::class)
   fun start_http_server(vertx: Vertx, testContext: VertxTestContext) {
     vertx.createHttpClient().getNow(8888, "localhost", "/") { response ->

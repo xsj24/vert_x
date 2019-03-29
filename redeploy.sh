@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 export LAUNCHER="io.vertx.core.Launcher"
-export VERTICLE="com.shujing.vert_x.MainVerticle"
+export VERTICLE="com.shujing.vertx.MainVerticle"
 export CMD="mvn compile"
 export VERTX_CMD="run"
 
