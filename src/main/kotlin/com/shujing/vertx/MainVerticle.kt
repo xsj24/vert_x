@@ -11,7 +11,9 @@ import io.vertx.core.DeploymentOptions
 
 class MainVerticle : AbstractVerticle() {
 
-  private val log : Logger = LoggerFactory.getLogger(MainVerticle::class.java)
+  companion object {
+    private val LOG : Logger = LoggerFactory.getLogger(MainVerticle::class.java)
+  }
 
   override fun start(startFuture: Future<Void>) {
 

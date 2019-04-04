@@ -31,14 +31,12 @@ class WikiDatabaseVerticle : AbstractVerticle() {
       .put("password", config().getString(CONFIG_WIKIDB_JDBC_PASSWORD, ""))
       .put("max_pool_size", config().getInteger(CONFIG_WIKIDB_JDBC_MAX_POOL_SIZE, 30)))
 
-    dbClient.query("select 1", { ar ->
+    dbClient.query("select 1") { ar ->
       ServiceBinder(vertx)
-        .setAddress(config().getString(CONFIG_WIKIDB_QUEUE, "wikidb"))
+        .setAddress(config().getString(CONFIG_WIKIDB_QUEUE, "wikidb.queue"))
         .register(WikiDatabaseService::class.java, WikiDatabaseService.create(dbClient))
-      LOG.info("{}", ar.result())
       startFuture.complete()
-    })
-
+    }
 
 
   }

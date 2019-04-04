@@ -17,12 +17,12 @@ class WikiDatabaseServiceImpl(val dbClient: JDBCClient) : WikiDatabaseService {
 
 
   override fun fetchAllPages(resultHandler: Handler<AsyncResult<JsonArray>>): WikiDatabaseService {
-    dbClient.query("", { ar ->
+    dbClient.query("select '1'") { ar ->
       if (ar.succeeded()) {
         val array = JsonArray(ar.result()
           .results
           .stream()
-          .map({ json -> json.getString(0) })
+          .map { json -> json.getString(0) }
           .sorted()
           .collect(Collectors.toList<String>())
         )
@@ -31,7 +31,7 @@ class WikiDatabaseServiceImpl(val dbClient: JDBCClient) : WikiDatabaseService {
         LOG.error("Database query[fetchAllPages] error", ar.cause())
         resultHandler.handle(Future.failedFuture(ar.cause()))
       }
-    })
+    }
     return this
   }
 
