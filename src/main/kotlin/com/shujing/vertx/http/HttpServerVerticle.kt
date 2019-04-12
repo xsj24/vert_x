@@ -6,6 +6,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import com.shujing.vertx.wiki.WikiDatabaseService
 import com.shujing.vertx.wiki.WikiDatabaseVerticle.Companion.CONFIG_WIKIDB_QUEUE
+import io.vertx.core.http.HttpHeaders
+import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.RoutingContext
 
@@ -26,12 +28,8 @@ class HttpServerVerticle : AbstractVerticle() {
 
     val httpServer = vertx.createHttpServer()
 
-    val router = Router.router(vertx)
-    router.get("/").handler(this::indexHandler)
-    router.get("/fetch").handler(this::fetchPagesHandler)
-
     httpServer
-      .requestHandler(router)
+      .requestHandler(router())
       .listen(port) {arHttp ->
         if (arHttp.succeeded()) {
           startFuture.complete()
@@ -40,13 +38,19 @@ class HttpServerVerticle : AbstractVerticle() {
           startFuture.fail(arHttp.cause())
         }
       }
+  }
 
-
+  private fun router(): Router {
+    val router = Router.router(vertx)
+    router.get("/").handler(this::indexHandler)
+    router.get("/fetch").handler(this::fetchPagesHandler)
+    router.get("/hi/:name").handler(this::helloHandler)
+    return router
   }
 
   private fun indexHandler(routingContext: RoutingContext) {
       routingContext.response()
-        .putHeader("content-type", "text/html")
+        .putHeader(HttpHeaders.CONTENT_TYPE, "text/html")
         .end("Hello from Vert.x!")
   }
 
@@ -56,8 +60,19 @@ class HttpServerVerticle : AbstractVerticle() {
       }
 
     routingContext.response()
-      .putHeader("content-type", "text/html")
+      .putHeader(HttpHeaders.CONTENT_TYPE, "text/html")
       .end("Hello from Vert.x!")
+  }
+
+  private fun helloHandler(rc: RoutingContext) {
+    var msg = "hello"
+    if (rc.pathParam("name") != null) {
+      msg += " " + rc.pathParam("name")
+    }
+    val json = JsonObject().put("msg", msg)
+    rc.response()
+      .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+      .end(json.encodePrettily())
   }
 
 }
